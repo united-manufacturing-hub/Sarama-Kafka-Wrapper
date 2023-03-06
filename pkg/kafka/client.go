@@ -108,7 +108,7 @@ func (c *Client) Close() error {
 	ctx10Sec, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	for len(c.messageQueue) > 0 {
+	for len(c.messageQueue) > 0 || len(c.producer.Input()) > 0 {
 		zap.S().Debugf("Awaiting send queue to be empty. %d messages left", len(c.messageQueue))
 		select {
 		case <-ctx10Sec.Done():
