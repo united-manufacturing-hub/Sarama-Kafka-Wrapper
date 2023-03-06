@@ -17,9 +17,11 @@ func TestAAAAInitZap(t *testing.T) {
 func TestSendMessage(t *testing.T) {
 
 	opts := NewClientOptions{
-		Brokers:          []string{"localhost:9093"},
-		ConsumerName:     "test",
-		ListenTopicRegex: regexp.MustCompile("test"),
+		Brokers:           []string{"localhost:9093"},
+		ConsumerName:      "test",
+		ListenTopicRegex:  regexp.MustCompile("test"),
+		ReplicationFactor: 1,
+		Partitions:        1,
 	}
 	c, err := NewKafkaClient(opts)
 	if err != nil {
