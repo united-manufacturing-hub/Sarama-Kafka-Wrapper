@@ -1,4 +1,4 @@
-module SaramaKafkaWrapper
+module github.com/united-manufacturing-hub/Sarama-Kafka-Wrapper
 
 go 1.20
 
