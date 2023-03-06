@@ -13,25 +13,29 @@ import (
 )
 
 type Client struct {
-	consumer             sarama.ConsumerGroup
-	producer             sarama.AsyncProducer
-	admin                sarama.ClusterAdmin
-	open                 bool
-	messageQueue         chan KafkaMessage
-	topics               []string
-	topicsRWMutex        *sync.RWMutex
-	topicCheckSum        uint64
-	topicRegex           *regexp.Regexp
-	lastCheck            int64
-	incomingMessageQueue chan KafkaMessage
-	ready                bool
-	closing              bool
+	consumer                   sarama.ConsumerGroup
+	producer                   sarama.AsyncProducer
+	admin                      sarama.ClusterAdmin
+	open                       bool
+	messageQueue               chan KafkaMessage
+	topics                     []string
+	topicsRWMutex              *sync.RWMutex
+	topicCheckSum              uint64
+	topicRegex                 *regexp.Regexp
+	lastCheck                  int64
+	incomingMessageQueue       chan KafkaMessage
+	ready                      bool
+	closing                    bool
+	newTopicsPartitions        int32
+	newTopicsReplicationFactor int16
 }
 
 type NewClientOptions struct {
-	Brokers          []string
-	ConsumerName     string
-	ListenTopicRegex *regexp.Regexp
+	Brokers           []string
+	ConsumerName      string
+	ListenTopicRegex  *regexp.Regexp
+	Partitions        int32
+	ReplicationFactor int16
 }
 
 var topicCache = make(map[string]bool)
@@ -71,6 +75,15 @@ func NewKafkaClient(opts NewClientOptions) (client *Client, err error) {
 
 	client.topicsRWMutex = &sync.RWMutex{}
 	client.ready = false
+	client.newTopicsPartitions = opts.Partitions
+	client.newTopicsReplicationFactor = opts.ReplicationFactor
+
+	if client.newTopicsReplicationFactor <= 0 {
+		zap.S().Fatalf("Replication factor must be greater than 0. Got %d", client.newTopicsReplicationFactor)
+	}
+	if client.newTopicsPartitions <= 0 {
+		zap.S().Fatalf("Partitions must be greater than 0. Got %d", client.newTopicsPartitions)
+	}
 
 	client.populateTopics()
 
@@ -132,8 +145,8 @@ func (c *Client) topicCreator(topic string) (err error) {
 	topicCache[topic] = false
 	topicCacheMutex.Unlock()
 	err = c.admin.CreateTopic(topic, &sarama.TopicDetail{
-		NumPartitions:     1,
-		ReplicationFactor: 1,
+		NumPartitions:     c.newTopicsPartitions,
+		ReplicationFactor: c.newTopicsReplicationFactor,
 	}, false)
 	return err
 }
