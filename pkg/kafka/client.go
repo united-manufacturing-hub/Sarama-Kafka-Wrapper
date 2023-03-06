@@ -38,7 +38,7 @@ var topicCache = make(map[string]bool)
 var topicCacheMutex = new(sync.RWMutex)
 var lastTopicChange = time.Now().UnixNano()
 
-func NewCryptKafkaClient(opts NewClientOptions) (client *Client, err error) {
+func NewKafkaClient(opts NewClientOptions) (client *Client, err error) {
 	config := sarama.NewConfig()
 	config.ClientID = opts.ConsumerName
 	config.Producer.Return.Errors = true

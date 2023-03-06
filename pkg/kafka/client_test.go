@@ -21,7 +21,7 @@ func TestSendMessage(t *testing.T) {
 		ConsumerName:     "test",
 		ListenTopicRegex: regexp.MustCompile("test"),
 	}
-	c, err := NewCryptKafkaClient(opts)
+	c, err := NewKafkaClient(opts)
 	if err != nil {
 		t.Fatalf("Error creating client: %v", err)
 	}
