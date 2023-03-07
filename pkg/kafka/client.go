@@ -3,8 +3,8 @@ package kafka
 import (
 	"context"
 	"errors"
-	"github.com/OneOfOne/xxhash"
 	"github.com/Shopify/sarama"
+	"github.com/zeebo/xxh3"
 	"go.uber.org/zap"
 	"regexp"
 	"sort"
@@ -266,7 +266,7 @@ func (c *Client) refreshTopics() {
 
 			subTopics := c.getTopicsForRegex()
 			// Generate hash by iterating over topics and appending using xxhash64
-			hasher := xxhash.New64()
+			hasher := xxh3.New()
 			for _, topic := range subTopics {
 				_, err := hasher.WriteString(topic)
 				if err != nil {

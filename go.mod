@@ -3,9 +3,9 @@ module github.com/united-manufacturing-hub/Sarama-Kafka-Wrapper
 go 1.20
 
 require (
-	github.com/OneOfOne/xxhash v1.2.8
 	github.com/Shopify/sarama v1.38.1
 	github.com/json-iterator/go v1.1.12
+	github.com/zeebo/xxh3 v1.0.2
 	go.elastic.co/ecszap v1.0.1
 	go.uber.org/zap v1.24.0
 )
@@ -25,6 +25,7 @@ require (
 	github.com/jcmturner/gokrb5/v8 v8.4.3 // indirect
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
 	github.com/klauspost/compress v1.15.14 // indirect
+	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/magefile/mage v1.9.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
