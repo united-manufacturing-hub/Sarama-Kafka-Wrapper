@@ -36,6 +36,7 @@ type NewClientOptions struct {
 	ListenTopicRegex  *regexp.Regexp
 	Partitions        int32
 	ReplicationFactor int16
+	EnableTLS         bool
 }
 
 var topicCache = make(map[string]bool)
@@ -47,6 +48,12 @@ func NewKafkaClient(opts NewClientOptions) (client *Client, err error) {
 	config.ClientID = opts.ConsumerName
 	config.Producer.Return.Errors = true
 	config.Consumer.Offsets.Initial = sarama.OffsetNewest
+
+	// Set TLS
+	config.Net.TLS.Enable = opts.EnableTLS
+	if !config.Net.TLS.Enable {
+		config.Net.TLS.Config = nil
+	}
 
 	client = &Client{}
 
