@@ -52,7 +52,7 @@ func NewKafkaClient(opts NewClientOptions) (client *Client, err error) {
 
 	zap.S().Debugf("Getting consumer for %s", opts.ConsumerName)
 	zap.S().Debugf("Brokers: %v", opts.Brokers)
-	zap.S().Debugf("Config: %v", config)
+	zap.S().Debugf("Config: %#v", config)
 	client.consumer, err = sarama.NewConsumerGroup(opts.Brokers, opts.ConsumerName, config)
 	if err != nil {
 		return nil, err
