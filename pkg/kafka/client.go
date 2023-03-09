@@ -50,17 +50,20 @@ func NewKafkaClient(opts NewClientOptions) (client *Client, err error) {
 
 	client = &Client{}
 
+	zap.S().Debugf("Getting consumer for %s", opts.ConsumerName)
 	client.consumer, err = sarama.NewConsumerGroup(opts.Brokers, opts.ConsumerName, config)
 	if err != nil {
 		return nil, err
 	}
 
+	zap.S().Debugf("Getting producer for %s", opts.ConsumerName)
 	client.producer, err = sarama.NewAsyncProducer(opts.Brokers, config)
 
 	if err != nil {
 		return nil, err
 	}
 
+	zap.S().Debugf("Getting admin for %s", opts.ConsumerName)
 	client.admin, err = sarama.NewClusterAdmin(opts.Brokers, config)
 
 	if err != nil {
@@ -85,7 +88,7 @@ func NewKafkaClient(opts NewClientOptions) (client *Client, err error) {
 		zap.S().Fatalf("Partitions must be greater than 0. Got %d", client.newTopicsPartitions)
 	}
 
-	client.populateTopics()
+	go client.populateTopics()
 
 	go client.errorReader()
 	go client.messageSender()
