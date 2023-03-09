@@ -55,6 +55,7 @@ func NewKafkaClient(opts NewClientOptions) (client *Client, err error) {
 	zap.S().Debugf("Config: %#v", config)
 	client.consumer, err = sarama.NewConsumerGroup(opts.Brokers, opts.ConsumerName, config)
 	if err != nil {
+		zap.S().Errorf("Error creating consumer group client: %v", err)
 		return nil, err
 	}
 
@@ -62,6 +63,7 @@ func NewKafkaClient(opts NewClientOptions) (client *Client, err error) {
 	client.producer, err = sarama.NewAsyncProducer(opts.Brokers, config)
 
 	if err != nil {
+		zap.S().Errorf("Error creating producer client: %v", err)
 		return nil, err
 	}
 
@@ -69,6 +71,7 @@ func NewKafkaClient(opts NewClientOptions) (client *Client, err error) {
 	client.admin, err = sarama.NewClusterAdmin(opts.Brokers, config)
 
 	if err != nil {
+		zap.S().Errorf("Error creating admin client: %v", err)
 		return nil, err
 	}
 
